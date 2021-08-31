@@ -5,7 +5,7 @@ import ErrorAlert from '../layout/ErrorAlert';
 
 export default function CreateReservationForm(){
     const [error, setError] = useState(null);
-    let history = useHistory();
+    const history = useHistory();
     const initialFormState = {
         first_name: '',
         last_name: '',

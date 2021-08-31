@@ -11,7 +11,7 @@ async function create(req,res) {
 
 async function list(req, res) {
   res.json({
-    data: [],
+    data: req.data,
   });
 }
 
