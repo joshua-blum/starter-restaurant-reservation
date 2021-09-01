@@ -12,11 +12,12 @@ export default function CreateReservationForm(){
         mobile_number: '',
         reservation_date: '',
         reservation_time: '',
-        people: ''
+        people: 0,
     };
 
     const [formData, setFormData] = useState({...initialFormState});
     const handleChange = ({target}) => {
+        console.log("form Data", formData, " and typeof people is ", typeof formData.people);
         setFormData({
             ...formData,
             [target.name]: target.value
