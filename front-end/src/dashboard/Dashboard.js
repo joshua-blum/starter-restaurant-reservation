@@ -3,6 +3,7 @@ import {useHistory} from "react-router-dom";
 import { listReservations } from "../utils/api";
 import {previous, today, next} from "../utils/date-time";
 import ErrorAlert from "../layout/ErrorAlert";
+import {quickSort, compare} from "../utils/sorting";
 
 /**
  * Defines the dashboard page.
@@ -21,7 +22,13 @@ function Dashboard({ date }) {
     const abortController = new AbortController();
     setReservationsError(null);
     listReservations({ date }, abortController.signal)
-      .then(setReservations)
+      .then((response) => {
+        console.log('here is the initial unsorted response: ', response);
+        console.log("what is quicksort returning? this: ", quickSort(compare, response));
+        return quickSort(compare, response);})
+      .then((response) => {
+        console.log('and here is the response after quicksort', response);
+        return setReservations(response)})
       .catch(setReservationsError);
     return () => abortController.abort();
   }
