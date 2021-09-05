@@ -17,7 +17,6 @@ export default function CreateReservationForm(){
 
     const [formData, setFormData] = useState({...initialFormState});
     const handleChange = ({target}) => {
-        console.log("typeof people is ", typeof formData.people);
         setFormData({
             ...formData,
             [target.name]: target.value
@@ -28,10 +27,13 @@ export default function CreateReservationForm(){
         event.preventDefault();
         createReservation(formData)
             .then(() => {
+                console.log("resolved promise from create reservation");
                 history.push(`/dashboard?date=${formData.reservation_date}`);
                 setFormData({...initialFormState});
             })
-            .catch(setError);
+            .catch((error) => {
+                console.log('here is the error being thrown', error)
+                setError(error)});
     }
 
     const handleCancel = (event) => {

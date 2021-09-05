@@ -22,13 +22,8 @@ function Dashboard({ date }) {
     const abortController = new AbortController();
     setReservationsError(null);
     listReservations({date}, abortController.signal)
-      .then((response) => {
-        console.log("here is the response",response);
-        if(response.length !== 0) setReservations(response);
-        else console.log("there are no reservations at this time")})
-      .catch((error) => {
-        console.log("here is the error", error);
-        setReservationsError(error)});
+      .then(setReservations)
+      .catch(setReservationsError);
     return () => abortController.abort();
   }
 
