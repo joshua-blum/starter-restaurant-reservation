@@ -17,7 +17,7 @@ export default function CreateReservationForm(){
 
     const [formData, setFormData] = useState({...initialFormState});
     const handleChange = ({target}) => {
-        console.log("form Data", formData, " and typeof people is ", typeof formData.people);
+        console.log("typeof people is ", typeof formData.people);
         setFormData({
             ...formData,
             [target.name]: target.value
@@ -108,7 +108,7 @@ export default function CreateReservationForm(){
                 Party Size:
                 <input
                     id='people'
-                    type='text'
+                    type='number'
                     name='people'
                     onChange={handleChange}
                     value={formData.people} 

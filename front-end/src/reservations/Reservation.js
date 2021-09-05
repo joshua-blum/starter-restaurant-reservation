@@ -1,6 +1,16 @@
 import React from "react";
-import ErrorAlert from '../layout/ErrorAlert';
 
-export default function Reservation(reservation){
-    
+export default function Reservation({reservation}){
+    return (
+    <div>
+        <hr />
+        <h4>Reservation for {reservation.first_name} {reservation.last_name}</h4>
+        <ul>
+            <li>Date: {reservation.reservation_date}</li>
+            <li>Time: {reservation.reservation_time}</li>
+            <li>Party Size: {reservation.people}</li>
+        </ul>
+        <hr/>
+    </div>
+    )
 }

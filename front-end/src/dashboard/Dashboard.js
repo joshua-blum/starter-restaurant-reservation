@@ -3,7 +3,7 @@ import {useHistory} from "react-router-dom";
 import { listReservations } from "../utils/api";
 import {previous, today, next} from "../utils/date-time";
 import ErrorAlert from "../layout/ErrorAlert";
-import {quickSort, compare} from "../utils/sorting";
+import ReservationList from "../reservations/ReservationList";
 
 /**
  * Defines the dashboard page.
@@ -21,15 +21,14 @@ function Dashboard({ date }) {
   function loadDashboard() {
     const abortController = new AbortController();
     setReservationsError(null);
-    listReservations({ date }, abortController.signal)
+    listReservations({date}, abortController.signal)
       .then((response) => {
-        console.log('here is the initial unsorted response: ', response);
-        console.log("what is quicksort returning? this: ", quickSort(compare, response));
-        return quickSort(compare, response);})
-      .then((response) => {
-        console.log('and here is the response after quicksort', response);
-        return setReservations(response)})
-      .catch(setReservationsError);
+        console.log("here is the response",response);
+        if(response.length !== 0) setReservations(response);
+        else console.log("there are no reservations at this time")})
+      .catch((error) => {
+        console.log("here is the error", error);
+        setReservationsError(error)});
     return () => abortController.abort();
   }
 
@@ -41,7 +40,8 @@ function Dashboard({ date }) {
         <h4 className="mb-0">Reservations for {date}</h4>
       </div>
       <ErrorAlert error={reservationsError} />
-      {JSON.stringify(reservations)}
+      {/*{JSON.stringify(reservations)}*/}
+      <ReservationList reservations={reservations} />
       <button type="button" onClick={() => history.push(`/dashboard?date=${previous(date)}`)}>Prior</button>
       <button type='button' onClick={() => history.push(`/dashboard?date=${today()}`)}>Today</button>
       <button type='button' onClick={() => history.push(`/dashboard?date=${next(date)}`)}>Next</button>

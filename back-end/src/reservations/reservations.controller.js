@@ -1,6 +1,7 @@
 const asyncErrorBoundary = require('../errors/asyncErrorBoundary');
 const service = require('./reservations.service');
 
+
 async function create(req,res) {
   try {
     const newReservation = req.body.data;
@@ -22,8 +23,14 @@ const validateBody = (req,res,next) => {
       return next({status:400,message:`Field required: ${requirement}`});
   })
 
+  let reservationDate = new Date(req.body.data.reservation_date)
+  //test if reservation_date is on a Tuesday
+  if(reservationDate.getDay() === 1) return next({status:400, message: "The restaurant is closed on Tuesdays"});
+  //test if reservation_date is in the past
+  if (reservationDate  < new Date()) return next({status:400, message: "Please choose either today or a future date to schedule your visit"});
+
   //test if reservation_date is in Date format
-  if(Number.isNaN(Date.parse(`${req.body.data.reservation_date}`))){
+  if(Number.isNaN(reservationDate)){
     return next({status:400, message: 'reservation_date field is in an incorrect format'});
   }
 
@@ -33,7 +40,7 @@ const validateBody = (req,res,next) => {
   }
 
   //test if people is a number
-  console.log('here is the typeof people', typeof req.body.data.people);
+  // console.log('here is the typeof people', typeof req.body.data.people, " and parsed... ", parseInt(req.body.data.people), " and isNaN ", isNaN(req.body.data.people));
   if((typeof req.body.data.people) != "number") return next({status:400, message:'people must be a number'});
 
   //test if people is a number greater than 0
