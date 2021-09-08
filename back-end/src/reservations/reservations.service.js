@@ -1,7 +1,5 @@
 const knex = require("../db/connection");
 
-const tableName = 'reservations';
-
 const list = (date) => {
     //if a date is specified, return only the reservations specified by that date
     if(date){

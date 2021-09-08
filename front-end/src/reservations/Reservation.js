@@ -10,6 +10,7 @@ export default function Reservation({reservation}){
             <li>Time: {reservation.reservation_time}</li>
             <li>Party Size: {reservation.people}</li>
         </ul>
+        <button type='button'><a href={`/reservations/${reservation.reservation_id}/seat`}>Seat</a></button>
         <hr/>
     </div>
     )
