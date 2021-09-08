@@ -19,7 +19,7 @@ function Dashboard({ date }) {
   const [reservationsError, setReservationsError] = useState(null);
   const [tablesError, setTablesError] = useState(null);
 
-  useEffect(loadDashboard, [date, setTables]);
+  useEffect(loadDashboard, [date, tables]);
 
   function loadDashboard() {
     const abortController = new AbortController();
@@ -30,11 +30,12 @@ function Dashboard({ date }) {
     listTables(abortController.signal)
       .then(setTables)
       .catch(setTablesError);
+    console.log("tables ", tables);
     return () => abortController.abort();
   }
 
 
-  return (
+  return (    
     <main>
       <h1>Dashboard</h1>
       <div className="d-md-flex mb-3">

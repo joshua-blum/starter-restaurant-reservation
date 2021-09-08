@@ -61,6 +61,13 @@ const validateBody = (req,res,next) => {
   next();
 }
 
+async function read(req,res) {
+  try{
+    const {reservation_id} = req.params;
+    const reservation = await service.read(reservation_id);
+    res.status(200).json({data: reservation});
+  } catch(error){throw error}''
+}
 
 async function list(req, res) {
   try {
@@ -73,4 +80,5 @@ async function list(req, res) {
 module.exports = {
   create: [validateBody, asyncErrorBoundary(create)], 
   list: asyncErrorBoundary(list),
+  read: asyncErrorBoundary(read)
 };

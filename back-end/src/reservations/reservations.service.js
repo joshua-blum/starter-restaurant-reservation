@@ -13,6 +13,10 @@ const create = (newReservation) => {
     return knex('reservations').insert(newReservation).returning('*');
 }
 
+const read = (reservation_id) => {
+    return knex('reservations').select('*').where({reservation_id}).first();
+}
+
 module.exports = {
-    list, create
+    list, create, read
 }
