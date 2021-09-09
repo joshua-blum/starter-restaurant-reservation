@@ -5,7 +5,7 @@ const create = (table) => {
 }
 
 const read = (table_id) => {
-    return knex('tables').select('*').where({table_id}).first();
+    return knex('tables').where({table_id}).select('*');
 }
 
 const update = (updatedTable) => {
