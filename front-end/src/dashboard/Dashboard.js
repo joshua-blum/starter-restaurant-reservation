@@ -30,10 +30,8 @@ function Dashboard({ date }) {
     listTables(abortController.signal)
       .then(setTables)
       .catch(setTablesError);
-    console.log("tables ", tables);
     return () => abortController.abort();
   }
-
 
   return (    
     <main>

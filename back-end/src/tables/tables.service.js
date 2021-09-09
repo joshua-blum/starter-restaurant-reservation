@@ -16,8 +16,12 @@ const update = (updatedTable) => {
         .then((updatedRecord) => updatedRecord[0]);
 }
 
+const destroy = (id) => {
+    return knex('tables').where({reservation_id: id}).del();
+}
+
 const list = () => {
     return knex('tables').select('*').orderBy('table_name');
 }
 
-module.exports = {create, read, update, list};
+module.exports = {create, read, update, list, delete: destroy};

@@ -1,0 +1,22 @@
+.modal {
+    position: fixed;
+    margin: left;
+    left:0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    width: 500px;
+    background-color: #fff;
+}
+
+.modal-body{
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+}

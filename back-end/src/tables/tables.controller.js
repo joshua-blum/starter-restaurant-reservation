@@ -39,6 +39,15 @@ const canUpdate = async (req,res,next) => {
     next();
 }
 
+const validDelete = async (req,res,next) => {
+    const {table_id} = req.params;
+    const originalTable = await service.read(table_id);
+    res.locals.table = originalTable[0];
+    if(!res.locals.table) return next({status:404, message:`The table with the id ${table_id} does not exist`});
+    if(!res.locals.table.reservation_id) return next({status:400, message:`The table ${originalTable.table_name} is not occupied`});
+    next();
+}
+
 //to be used with CreateTableForm
 async function create(req,res){
     try {
@@ -65,8 +74,16 @@ async function list(req,res){
     } catch(error){throw error};
 }
 
+async function destroy(req,res){
+    try{
+        await service.delete(res.locals.table.reservation_id);
+        res.sendStatus(200);
+    }catch(error){throw error};
+}
+
 module.exports = {
     create: [validateBody, asyncErrorBoundary(create)],
     update: [canUpdate, asyncErrorBoundary(update)],
-    list: asyncErrorBoundary(list)
+    list: asyncErrorBoundary(list),
+    delete: [validDelete, asyncErrorBoundary(destroy)]
 }
