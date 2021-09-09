@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {useHistory, useParams} from 'react-router-dom';
-import Table from '../tables/Table';
 import {updateTable, listTables} from '../utils/api';
 
 export default function SeatForm(){

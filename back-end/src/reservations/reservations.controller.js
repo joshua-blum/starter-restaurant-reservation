@@ -17,7 +17,6 @@ const validateBody = (req,res,next) => {
 
   //test that there is a req body
   if(!req.body.data) return next({status:400,message:'Body must include a data object'});
-  console.log("confirmed there is a req body");
 
   //comfirm all required fields are present in the req body
   const requiredFields = ['first_name', 'last_name', 'mobile_number', 'reservation_date', 'reservation_time', 'people'];
@@ -61,12 +60,13 @@ const validateBody = (req,res,next) => {
   next();
 }
 
-async function read(req,res) {
+async function read(req,res,next) {
   try{
     const {reservation_id} = req.params;
     const reservation = await service.read(reservation_id);
+    if(!reservation) return next({status:404, message:`A reservation with the id ${reservation_id} does not exist`});
     res.status(200).json({data: reservation});
-  } catch(error){throw error}''
+  } catch(error){throw error};
 }
 
 async function list(req, res) {

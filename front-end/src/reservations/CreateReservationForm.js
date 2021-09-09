@@ -17,6 +17,7 @@ export default function CreateReservationForm(){
 
     const [formData, setFormData] = useState({...initialFormState});
     const handleChange = ({target}) => {
+        console.log('typeof people is ', typeof formData.people);
         setFormData({
             ...formData,
             [target.name]: target.value
@@ -25,7 +26,7 @@ export default function CreateReservationForm(){
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        createReservation(formData)
+        createReservation({...formData, people: parseInt(formData.people)})
             .then(() => {
                 console.log("resolved promise from create reservation");
                 history.push(`/dashboard?date=${formData.reservation_date}`);
