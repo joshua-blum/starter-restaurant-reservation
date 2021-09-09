@@ -77,7 +77,6 @@ export async function listTables(params, signal){
 }
 
 export async function createReservation(reservation, signal){
-  console.log("this is the reservation", reservation)
   const url = `${API_BASE_URL}/reservations`;
   const options = {
     method: 'POST',
@@ -89,7 +88,6 @@ export async function createReservation(reservation, signal){
 }
 
 export async function createTable(table, signal){
-  console.log('this is the table', table);
   const url = `${API_BASE_URL}/tables`;
   const options = {
     method: 'POST',
@@ -98,4 +96,15 @@ export async function createTable(table, signal){
     signal
   }
   return await fetchJson(url, options, 'createTable error');
+}
+
+export async function updateTable(id, table_id, signal){
+  const url = `${API_BASE_URL}/tables/${table_id}/seat`;
+  const options = {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({data: {reservation_id: id}}),
+    signal
+  }
+  return await fetchJson(url, options, 'update table error');
 }

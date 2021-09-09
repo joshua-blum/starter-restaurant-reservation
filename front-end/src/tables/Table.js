@@ -1,18 +1,17 @@
 import React from 'react';
 
-export default function Table(table){
+export default function Table({table}){
     const vacancy = () => {
-        //check if table has a reservation
-            //if so, return "Occupied"
-        return "Free";
+        if(table.reservation_id) return "Occupied"
+        else return "Free";
     }
     
     return (
     <div>
-        <h4>Table: {table.table_name}</h4>
+        <h4>{table.table_name}</h4>
         <ul>
-            <li>Capacity: {table.capacity}</li>
-            <li data-table-id-status={table.table_id}>{vacancy}</li>
+            <li key='capacity'>Capacity: {table.capacity}</li>
+            <li key='status' data-table-id-status={table.table_id}>Status: {vacancy()}</li>
         </ul>
     </div>
 )}
