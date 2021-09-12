@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useHistory} from 'react-router-dom';
-import {unassignReservation} from '../utils/api';
+import {unassignReservation, updateReservationStatus} from '../utils/api';
 
 
 export default function Table({table}){
@@ -9,8 +9,10 @@ export default function Table({table}){
     const handleDeletion = () => {
         if(window.confirm('Is this table ready to seat new guests?')){
             const abortController = new AbortController();
-            unassignReservation(table.reservation_id, table.table_id, abortController.signal)
+            unassignReservation(table.table_id, abortController.signal)
                 .then(() => history.push('/dashboard'))
+                .catch((error) => {throw error});
+            updateReservationStatus(table.reservation_id, 'finished', abortController.signal)
                 .catch((error) => {throw error});
             return () => abortController.abort();
         }

@@ -31,14 +31,16 @@ headers.append("Content-Type", "application/json");
  */
 async function fetchJson(url, options, onCancel) {
   try {
+    console.log('in fetch, options is a ', typeof options);
     const response = await fetch(url, options);
-
+    console.log('option: ', JSON.stringify(options.method));
+    console.log('here is the raw response ==>', response, '<==') 
     if (response.status === 204) {
       return null;
     }
 
     const payload = await response.json();
-
+    console.log('and here it is in json ==>', payload, '<==');
     if (payload.error) {
       return Promise.reject({ message: payload.error });
     }
@@ -109,13 +111,22 @@ export async function updateTable(id, table_id, signal){
   return await fetchJson(url, options, 'update table error');
 }
 
-export async function unassignReservation(id, table_id, signal){
+export async function unassignReservation(table_id, signal){
   const url = `${API_BASE_URL}/tables/${table_id}/seat`;
   const options = {
     method: 'DELETE',
+    signal
+  };
+  return await fetchJson(url, options, 'unassignReservation error');
+}
+
+export async function updateReservationStatus(id, newStatus, signal){
+  const url = `${API_BASE_URL}/reservations/${id}/status`;
+  const options = {
+    method: 'PUT',
     headers,
-    body: JSON.stringify({data: {reservation_id: id}}),
+    body: JSON.stringify({data: {status: newStatus}}),
     signal
   }
-  return await fetchJson(url, options, 'unassignReservation error')
+  return await fetchJson(url, options, 'update reservation status error');
 }

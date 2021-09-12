@@ -26,7 +26,7 @@ export default function CreateReservationForm(){
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        createReservation({...formData, people: parseInt(formData.people)})
+        createReservation({...formData, people: parseInt(formData.people), status: 'booked'})
             .then(() => {
                 console.log("resolved promise from create reservation");
                 history.push(`/dashboard?date=${formData.reservation_date}`);

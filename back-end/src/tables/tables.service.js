@@ -17,7 +17,7 @@ const update = (updatedTable) => {
 }
 
 const destroy = (id) => {
-    return knex('tables').where({reservation_id: id}).del();
+    return knex('tables').where({"reservation_id": id}).del();
 }
 
 const list = () => {
