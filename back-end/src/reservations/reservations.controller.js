@@ -1,6 +1,6 @@
 const asyncErrorBoundary = require('../errors/asyncErrorBoundary');
 const service = require('./reservations.service');
-
+const tablesService = require('../tables/tables.service');
 
 async function create(req,res) {
   try {
@@ -58,61 +58,86 @@ const validateBody = (req,res,next) => {
   if(parseInt(req.body.data.people) < 1) return next({status:400, message: 'people must be greater than or equal to 1'});
 
   //test if the status is correct
-  if(req.body.data.status !== 'booked') return next({status:400, message: `Reservations must always start off booked, not ${req.body.data.status}`});
+  if(req.body.data.status && req.body.data.status !== 'booked') return next({status:400, message: `Reservations must always start off booked, not ${req.body.data.status}`});
 
   next();
 }
 
+const validDelete = async (req,res,next) => {
+  const {table_id} = req.params;
+  const originalTable = await tablesService.read(table_id);
+  res.locals.table = originalTable[0];
+  if(!res.locals.table) return next({status:404, message:`The table with the id ${table_id} does not exist`});
+  if(!res.locals.table.reservation_id) return next({status:400, message:`The table ${originalTable.table_name} is not occupied`});
+  const reservation = await service.read(res.locals.table.reservation_id);
+  res.locals.reservation = reservation[0];
+  next();
+}
+
 const canUpdate = async (req,res,next) => {
+  console.log('in can update reservations with the following req: ', req.body.data);
   if(!req.body.data) return next({status:400, message: 'Body must include a data object'});
   if(!req.body.data.status) return next({status:400, message: 'There must be a status to which the reservation is being updated'});
-
+  console.log('got through basic reqbody stuff');
   const possibleStatuses = ['booked', 'seated', 'finished'];
   let statusIsPossible = false;
-  for(let i=0; i < 2; i++){
+  for(let i=0; i < 3; i++){
     if(req.body.data.status === possibleStatuses[i]) statusIsPossible = true;
   }
   if(!statusIsPossible) return next({status:400, message: 'The status you are attempting to update is unknown'});
-
+  console.log('got through status validation');
   const {reservation_id} = req.params;
   const originalReservation = await service.read(reservation_id);
+  console.log('read the original reservation with the passed in id... here it is: ', originalReservation);
   if(!originalReservation[0]) return next({status:404, message:`The reservation with the id ${reservation_id} does not exist`});
-  console.log("here is it's first index ==>", originalReservation[0], "<==")
   if(originalReservation[0].status === 'finished') return next({status:400, message: 'A finished reservation cannot be updated'});
   res.locals.reservation = originalReservation[0];
+  console.log('validated that the req body CAN in fact be passed to crUdl');
   next();
 }
 
 async function read(req,res,next) {
   try{
     const {reservation_id} = req.params;
+    
     const reservation = await service.read(reservation_id);
-    if(!reservation) return next({status:404, message:`A reservation with the id ${reservation_id} does not exist`});
-    res.status(200).json({data: reservation});
+    if(!reservation[0]) return next({status:404, message:`A reservation with the id ${reservation_id} does not exist`});
+    res.status(200).json({data: reservation[0]});
   } catch(error){throw error};
 }
 
 async function update(req,res,next){
   try {
-    console.log(req.body.data.status)
+    console.log('in update reservations')
     const updatedReservation = {...res.locals.reservation, status: req.body.data.status};
     const response = await service.update(updatedReservation);
-    console.log('this is the new status   and here is the updated response ', response, 'from this:', res.locals.reservation);
+    console.log('from update reservations comes ', response);
     res.status(200).json({data: response});
   } catch(error){throw error};
 }
 
+async function destroy(req,res){
+  try{
+      await service.update({...res.locals.reservation, status: 'finished'})
+      //await service.delete(res.locals.table.reservation_id);
+      res.sendStatus(200);
+  }catch(error){throw error};
+}
+
 async function list(req, res) {
   try {
-    const date = req.query.date;
-    const response = await service.list(date);
+    let response;
+    if(req.query.hasOwnProperty('mobile_number')) response = await service.search(req.query.mobile_number)
+    else response = await service.list(req.query.date);
     res.json({data: response});
   } catch(error){throw error};
 }
+
 
 module.exports = {
   create: [validateBody, asyncErrorBoundary(create)], 
   list: asyncErrorBoundary(list),
   read: asyncErrorBoundary(read),
-  update: [canUpdate, asyncErrorBoundary(update)]
+  update: [canUpdate, asyncErrorBoundary(update)],
+  delete: [validDelete, asyncErrorBoundary(destroy)]
 };

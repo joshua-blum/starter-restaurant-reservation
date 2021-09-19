@@ -8,6 +8,10 @@ const read = (table_id) => {
     return knex('tables').where({table_id}).select('*');
 }
 
+const checkIfReserved = (reservation_id) => {
+    return knex('tables').where({reservation_id}).select("*");
+}
+
 const update = (updatedTable) => {
     return knex('tables')
         .select('*')
@@ -16,12 +20,12 @@ const update = (updatedTable) => {
         .then((updatedRecord) => updatedRecord[0]);
 }
 
-const destroy = (id) => {
-    return knex('tables').where({"reservation_id": id}).del();
-}
+// const destroy = (id) => {
+//     return knex('tables').where({"reservation_id": id}).del();
+// }
 
 const list = () => {
     return knex('tables').select('*').orderBy('table_name');
 }
 
-module.exports = {create, read, update, list, delete: destroy};
+module.exports = {create, read, update, list, checkIfReserved};

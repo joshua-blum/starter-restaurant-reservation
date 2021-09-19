@@ -22,29 +22,39 @@ const validateBody = (req,res,next) => {
 
 //validation for updating table with reservation_id
 const canUpdate = async (req,res,next) => {
-    //validate that there is data being sent to update
-    if(!req.body.data) return next({status:400, message:'Body must include a data object'});
-    if(!req.body.data.reservation_id) return next({status:400, message:'To seat you, we need your reservation_id'});
-
-    //ensure that the reservation_id belongs to an actual reservation
-    const reservation = await reservationService.read(req.body.data.reservation_id);
-    if(!reservation) return next({status:404, message:`The reservation with the id ${req.body.data.reservation_id} does not exist`});
-
+    console.log('in can update...');
+    console.log('trying to validate the following with update ', req.body, ' and here is the reslocals.reservation ', res.locals.reservation);
     //check that the table has enough capacity for the reservation, and that it is not already being reserved
     const {table_id} = req.params;
     const originalTable = await service.read(table_id);
+    if(!originalTable || !originalTable[0]) return next({status: 404, message: `There does not exist a table with the id ${table_id}`});
+    
     res.locals.table = originalTable[0];
-    if(res.locals.table.capacity < reservation.people) return next({status:400, message:`The table only has capacity for ${res.locals.table.capacity} spaces, which is not enough space for the ${reservation.people} people in the reservation`});
+   
+    if(res.locals.table.capacity < res.locals.reservation.people) return next({status:400, message:`The table only has capacity for ${res.locals.table.capacity} spaces, which is not enough space for the ${res.locals.reservation.people} people in the reservation`});
+    
     if(res.locals.table.reservation_id) return next({status:400, message:`The table is already occupied by the reservation with the following id: ${res.locals.table.reservation_id}`});
+
+    const alreadySeated = await service.checkIfReserved(res.locals.reservation.reservation_id);
+    if(alreadySeated[0]) {
+        console.log('it is already seated: ', JSON.stringify(alreadySeated[0]));
+        return next({status:400, message:`The reservation with id ${res.locals.reservation.reservation_id} is already seated`})
+    } else console.log('it is not already seated, and here is why: alreadySeated is returning... ', JSON.stringify(alreadySeated));
+    console.log('passed all tests in canUpdate! being pushed to tables.controller.update')
     next();
 }
 
-const validDelete = async (req,res,next) => {
-    const {table_id} = req.params;
-    const originalTable = await service.read(table_id);
-    res.locals.table = originalTable[0];
-    if(!res.locals.table) return next({status:404, message:`The table with the id ${table_id} does not exist`});
-    if(!res.locals.table.reservation_id) return next({status:400, message:`The table ${originalTable.table_name} is not occupied`});
+const hasValidReservation = async (req,res,next) => {
+    console.log('in hasValidREservation');
+    //validate that there is data being sent to update
+    if(!req.body.data) return next({status:400, message:'Body must include a data object'});
+    if(!req.body.data.reservation_id) return next({status:400, message:'To seat you, we need your reservation_id'});
+    console.log('basic req body is good');
+    //ensure that the reservation_id belongs to an actual reservation
+    const reservation = await reservationService.read(req.body.data.reservation_id);
+    if(!reservation || !reservation[0]) return next({status:404, message:`The reservation with the id ${req.body.data.reservation_id} does not exist`});
+    res.locals.reservation = reservation[0];
+    console.log('the reservation DOES in fact belong to an actual reservation and has been assigned to res locals', res.locals.reservation);
     next();
 }
 
@@ -60,10 +70,17 @@ async function create(req,res){
 //to be used with SeatForm
 async function update(req,res){
     try {
+        console.log('============')
+        console.log('in tables.controller.update');
         const updatedTable = {...res.locals.table, reservation_id: req.body.data.reservation_id};
-        const response = await service.update(updatedTable);
-        res.status(200).json({data: response});
-    } catch(error){throw error};
+        const tableResponse = await service.update(updatedTable);
+        await reservationService.update({...res.locals.reservation, status: 'seated'})
+        //^this IS needed here because it is part of what is supposed to happen during the put request to tables/:tableId/seat
+        console.log('here is the response from tableResponse: ', tableResponse);
+        res.status(200).json({data: tableResponse});
+    } catch(error){
+        console.log('an error is being thrown in tables.controller.update ', error.stack);
+        throw error};
 }
 
 //to be used on the Dashboard
@@ -74,16 +91,8 @@ async function list(req,res){
     } catch(error){throw error};
 }
 
-async function destroy(req,res){
-    try{
-        await service.delete(res.locals.table.reservation_id);
-        res.sendStatus(200);
-    }catch(error){throw error};
-}
-
 module.exports = {
     create: [validateBody, asyncErrorBoundary(create)],
-    update: [canUpdate, asyncErrorBoundary(update)],
+    update: [hasValidReservation, canUpdate, asyncErrorBoundary(update)],
     list: asyncErrorBoundary(list),
-    delete: [validDelete, asyncErrorBoundary(destroy)]
 }

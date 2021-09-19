@@ -1,18 +1,18 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {useHistory} from 'react-router-dom';
-import {unassignReservation, updateReservationStatus} from '../utils/api';
+import {unassignReservation} from '../utils/api';
 
 
 export default function Table({table}){
     let history = useHistory();
 
-    const handleDeletion = () => {
+    const handleDeletion = ({table_id}) => {
+        console.log('in handle deletion of table_id ', table_id);
         if(window.confirm('Is this table ready to seat new guests?')){
             const abortController = new AbortController();
-            unassignReservation(table.table_id, abortController.signal)
+            console.log('here is the table id? ', table_id);
+            unassignReservation(table_id, abortController.signal)
                 .then(() => history.push('/dashboard'))
-                .catch((error) => {throw error});
-            updateReservationStatus(table.reservation_id, 'finished', abortController.signal)
                 .catch((error) => {throw error});
             return () => abortController.abort();
         }
@@ -27,7 +27,7 @@ export default function Table({table}){
         <button 
         type='button' 
         data-table-id-finish={table.table_id} 
-        onClick={handleDeletion}
+        onClick={() => handleDeletion(table)}
         >Finish
         </button>
     );

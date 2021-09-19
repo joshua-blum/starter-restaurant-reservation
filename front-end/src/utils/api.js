@@ -31,16 +31,12 @@ headers.append("Content-Type", "application/json");
  */
 async function fetchJson(url, options, onCancel) {
   try {
-    console.log('in fetch, options is a ', typeof options);
     const response = await fetch(url, options);
-    console.log('option: ', JSON.stringify(options.method));
-    console.log('here is the raw response ==>', response, '<==') 
     if (response.status === 204) {
       return null;
     }
 
     const payload = await response.json();
-    console.log('and here it is in json ==>', payload, '<==');
     if (payload.error) {
       return Promise.reject({ message: payload.error });
     }
@@ -65,16 +61,14 @@ export async function listReservations(params, signal) {
   Object.entries(params).forEach(([key, value]) =>
     url.searchParams.append(key, value.toString())
   );
+  console.log('here is the url being sent to fetchjson ', JSON.stringify(url));
   return await fetchJson(url, { headers, signal }, [])
     .then(formatReservationDate)
     .then(formatReservationTime);
 }
 
-export async function listTables(params, signal){
+export async function listTables(signal){
   const url = new URL(`${API_BASE_URL}/tables`);
-  Object.entries(params).forEach(([key, value]) =>
-    url.searchParams.append(key, value.toString())
-  );
   return await fetchJson(url, { headers, signal }, [])
 }
 
@@ -100,7 +94,8 @@ export async function createTable(table, signal){
   return await fetchJson(url, options, 'createTable error');
 }
 
-export async function updateTable(id, table_id, signal){
+export async function assignReservation(id, table_id, signal){
+  console.log('here are the infos: ', id, ' table ', table_id);
   const url = `${API_BASE_URL}/tables/${table_id}/seat`;
   const options = {
     method: 'PUT',
@@ -108,10 +103,11 @@ export async function updateTable(id, table_id, signal){
     body: JSON.stringify({data: {reservation_id: id}}),
     signal
   }
-  return await fetchJson(url, options, 'update table error');
+  return await fetchJson(url, options, 'assignReservation error');
 }
 
 export async function unassignReservation(table_id, signal){
+  console.log('in unassignReservation ', table_id);
   const url = `${API_BASE_URL}/tables/${table_id}/seat`;
   const options = {
     method: 'DELETE',
@@ -121,6 +117,7 @@ export async function unassignReservation(table_id, signal){
 }
 
 export async function updateReservationStatus(id, newStatus, signal){
+  console.log('in updateReservationStatus with ', id, ' and the status to be: ', newStatus);
   const url = `${API_BASE_URL}/reservations/${id}/status`;
   const options = {
     method: 'PUT',
