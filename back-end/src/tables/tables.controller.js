@@ -44,8 +44,23 @@ const canUpdate = async (req,res,next) => {
     next();
 }
 
+const canUnassignReservation = async (req,res,next) => {
+    const {table_id} = req.params;
+    const originalTable = await service.read(table_id);
+    if(!originalTable || !originalTable[0]) return next({status: 404, message: `There does not exist a table with the id ${table_id}`});
+    
+    res.locals.table = originalTable[0];
+    console.log('here is the table that we are trying to get rid of the reservation for: ', res.locals.table);
+    if(!res.locals.table.reservation_id) return next({status: 400, message: `The table with id ${res.locals.table.table_id} is not occupied`});
+    //ensure that the reservation_id belongs to an actual reservation
+    const reservation = await reservationService.read(res.locals.table.reservation_id);
+    if(!reservation || !reservation[0]) return next({status:404, message:`The reservation with the id ${res.locals.table.reservation_id} does not exist`});
+    res.locals.reservation = reservation[0];
+    console.log('the reservation DOES in fact belong to an actual reservation and has been assigned to res locals', res.locals.reservation);
+    next();
+}
 const hasValidReservation = async (req,res,next) => {
-    console.log('in hasValidREservation');
+    console.log('in hasValidREservation with req body ', req.body);
     //validate that there is data being sent to update
     if(!req.body.data) return next({status:400, message:'Body must include a data object'});
     if(!req.body.data.reservation_id) return next({status:400, message:'To seat you, we need your reservation_id'});
@@ -91,8 +106,27 @@ async function list(req,res){
     } catch(error){throw error};
 }
 
+async function destroy(req,res){
+    try{
+        console.log('in tablesController.destroy with this table ', res.locals.table)
+        const updatedTable = {...res.locals.table, reservation_id: null};
+        console.log('sending the table to update: ', updatedTable);
+        const tableResponse = await service.update(updatedTable);
+        console.log('survived first awiat, and this is the response ', tableResponse);
+        console.log('sending this reservation to become finished ', res.locals.reservation);
+        const reservationResponse = await reservationService.update({...res.locals.reservation, status: 'finished'})
+        console.log('this should be a finished reservation now ==> ', reservationResponse)
+        console.log('survived second await')
+        res.sendStatus(200)
+    }catch(error){
+        console.log('throwing error from tables.destroy ', error.stack);
+        throw error};
+  }
+
 module.exports = {
     create: [validateBody, asyncErrorBoundary(create)],
     update: [hasValidReservation, canUpdate, asyncErrorBoundary(update)],
+    destroy: [canUnassignReservation, asyncErrorBoundary(destroy)],
     list: asyncErrorBoundary(list),
+
 }

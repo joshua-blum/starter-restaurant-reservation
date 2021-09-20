@@ -11,7 +11,6 @@ export default function SeatForm(){
 
     const handleCancel = (event) => {
         event.preventDefault();
-        console.log('cancelling the seating');
         history.goBack();
     }
 

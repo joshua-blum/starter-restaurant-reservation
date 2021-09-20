@@ -9,6 +9,15 @@ async function create(req,res) {
     res.status(201).json({data:response[0]}); 
   } catch(error){throw error};
 }
+
+async function edit(req,res) {
+  try {
+    console.log('in edit with ', req.body);
+    const updatedReservation = req.body.data;
+    const response = await service.update(updatedReservation);
+    res.status(200).json({data:response});
+  } catch (error) {throw error};
+}
 /**
  * List handler for reservation resources
  */
@@ -74,14 +83,21 @@ const validDelete = async (req,res,next) => {
   next();
 }
 
+const validReservation = async (req,res, next) => {
+  if(!req.body.data.reservation_id) return next({status:404, message:`Please input a reservation`})
+  const checkIfExists = await service.read(req.body.data.reservation_id);
+  if(!checkIfExists) return next({status: 404, message: `The reservation with the id ${req.body.data.reservation_id} does not exist`});
+  next();
+}
+
 const canUpdate = async (req,res,next) => {
-  console.log('in can update reservations with the following req: ', req.body.data);
   if(!req.body.data) return next({status:400, message: 'Body must include a data object'});
+  console.log('in can update reservations with the following req: ', req.body.data);
   if(!req.body.data.status) return next({status:400, message: 'There must be a status to which the reservation is being updated'});
   console.log('got through basic reqbody stuff');
-  const possibleStatuses = ['booked', 'seated', 'finished'];
+  const possibleStatuses = ['booked', 'seated', 'finished', 'cancelled'];
   let statusIsPossible = false;
-  for(let i=0; i < 3; i++){
+  for(let i=0; i < 4; i++){
     if(req.body.data.status === possibleStatuses[i]) statusIsPossible = true;
   }
   if(!statusIsPossible) return next({status:400, message: 'The status you are attempting to update is unknown'});
@@ -118,8 +134,8 @@ async function update(req,res,next){
 
 async function destroy(req,res){
   try{
+      console.log('in reservationsController.destroy')
       await service.update({...res.locals.reservation, status: 'finished'})
-      //await service.delete(res.locals.table.reservation_id);
       res.sendStatus(200);
   }catch(error){throw error};
 }
@@ -136,6 +152,7 @@ async function list(req, res) {
 
 module.exports = {
   create: [validateBody, asyncErrorBoundary(create)], 
+  edit: [validateBody, validReservation, asyncErrorBoundary(edit)],
   list: asyncErrorBoundary(list),
   read: asyncErrorBoundary(read),
   update: [canUpdate, asyncErrorBoundary(update)],

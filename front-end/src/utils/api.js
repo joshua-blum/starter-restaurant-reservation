@@ -31,12 +31,14 @@ headers.append("Content-Type", "application/json");
  */
 async function fetchJson(url, options, onCancel) {
   try {
+    console.log('in fetch json')
     const response = await fetch(url, options);
     if (response.status === 204) {
       return null;
     }
 
     const payload = await response.json();
+    console.log('here is the payload ', payload);
     if (payload.error) {
       return Promise.reject({ message: payload.error });
     }
@@ -68,6 +70,7 @@ export async function listReservations(params, signal) {
 }
 
 export async function listTables(signal){
+  console.log('listing tables now');
   const url = new URL(`${API_BASE_URL}/tables`);
   return await fetchJson(url, { headers, signal }, [])
 }
@@ -111,6 +114,7 @@ export async function unassignReservation(table_id, signal){
   const url = `${API_BASE_URL}/tables/${table_id}/seat`;
   const options = {
     method: 'DELETE',
+    headers,
     signal
   };
   return await fetchJson(url, options, 'unassignReservation error');
@@ -126,4 +130,15 @@ export async function updateReservationStatus(id, newStatus, signal){
     signal
   }
   return await fetchJson(url, options, 'update reservation status error');
+}
+
+export async function editReservation(updatedReservation, signal){
+  const url = `${API_BASE_URL}/reservations/`;
+  const options = {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({data: updatedReservation}),
+    signal
+  };
+  return await fetchJson(url, options, 'editReservation error');
 }
