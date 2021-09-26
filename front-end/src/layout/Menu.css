@@ -1,0 +1,18 @@
+.link {
+    border-radius: 200px;
+}
+
+a {
+    color: white;
+}
+
+a.link:hover {
+    color: #D8BFD8;
+    text-decoration: none;
+}
+
+a.link:active {
+    color: #393a44;
+    text-decoration: none;
+}
+
