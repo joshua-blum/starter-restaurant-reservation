@@ -7,7 +7,6 @@ const list = (date) => {
         return knex('reservations').where((builder) => builder.whereNull('status').orWhere('status', 'booked').orWhere('status', 'seated')).andWhere({reservation_date: date}).orderBy('reservation_time');
     }
     //by default, return ALL reservations
-    //return knex('reservations').select('*').whereNot({'status': 'finished'}).orderBy('reservation_time');
     else return knex('reservations').select('*').whereNot({'status': 'finished'}).orderBy('reservation_time');
 
 }

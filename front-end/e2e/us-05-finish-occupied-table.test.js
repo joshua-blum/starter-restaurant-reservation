@@ -57,38 +57,29 @@ describe("US-05 - Finish an occupied table - E2E", () => {
     });
 
     test("clicking finish button and then clicking OK makes that table available", async () => {
-      console.log('in test of interest');
       await page.screenshot({
         path: ".screenshots/us-05-dashboard-finish-button-before.png",
         fullPage: true,
       });
-      console.log('took a screenshot')
       const containsOccupied = await containsText(
         page,
         `[data-table-id-status="${table.table_id}"]`,
         "occupied"
       );
-        console.log('was able to get containsOccupied, and it is ', containsOccupied);
       expect(containsOccupied).toBe(true);
 
       const finishButtonSelector = `[data-table-id-finish="${table.table_id}"]`;
       await page.waitForSelector(finishButtonSelector);
-      console.log('waitforselector worked!');
       page.on("dialog", async (dialog) => {
-        console.log('in page on dialog')
         expect(dialog.message()).toContain(
           "Is this table ready to seat new guests?"
         );
         await dialog.accept();
       });
-console.log('got through dialog accept')
       await page.click(finishButtonSelector);
-console.log('page click')
       await page.waitForResponse((response) => {
-        console.log('got into waitforresponse')
         return response.url().endsWith(`/tables`);
       });
-console.log('escaped from waitforresponse')
       await page.screenshot({
         path: ".screenshots/us-05-dashboard-finish-button-after.png",
         fullPage: true,
@@ -99,7 +90,6 @@ console.log('escaped from waitforresponse')
         `[data-table-id-status="${table.table_id}"]`,
         "free"
       );
-console.log('here is what is being returned from conrainsfree ', containsFree);
       expect(containsFree).toBe(true);
     });
 

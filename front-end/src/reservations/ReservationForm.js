@@ -1,12 +1,25 @@
-import React, {useState} from "react";
-import {useHistory} from "react-router-dom";
-import {createReservation} from '../utils/api';
+import React, { useEffect, useRef, useState } from 'react';
+import {useHistory, useParams} from 'react-router-dom';
+import {findReservation} from '../utils/api';
 import ErrorAlert from '../layout/ErrorAlert';
 
-export default function CreateReservationForm(){
-    const [error, setError] = useState(null);
+export default function ReservationForm({reservationUpdate, reservationCreation, }){
     const history = useHistory();
-    const initialFormState = {
+    const [error, setError] = useState(null);
+    const [reservation, setReservation] = useState({});
+    const {reservation_id} = useParams();
+    const hasFetchedReservation = useRef(false);
+    
+    useEffect(() => {
+        if(!hasFetchedReservation.current){
+            const abortController = new AbortController();
+            if(reservation_id) findSpecificReservation(reservation_id, abortController.signal);
+            hasFetchedReservation.current = true;
+            return () => abortController.abort();
+        }
+    }, [reservation_id])
+
+    let initialFormState = {
         first_name: '',
         last_name: '',
         mobile_number: '',
@@ -14,27 +27,35 @@ export default function CreateReservationForm(){
         reservation_time: '',
         people: 0,
     };
+    
 
     const [formData, setFormData] = useState({...initialFormState});
+
+    const findSpecificReservation = async (reservation_id) => {
+        try {
+            const response = await findReservation(reservation_id);
+            if(response) {
+                setReservation(response)
+                setFormData(response)};
+        } catch (error) {setError(error); throw error}
+    }
     const handleChange = ({target}) => {
-        console.log('typeof people is ', typeof formData.people);
         setFormData({
             ...formData,
             [target.name]: target.value
         })
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        createReservation({...formData, people: parseInt(formData.people), status: 'booked'})
-            .then(() => {
-                console.log("resolved promise from create reservation");
-                history.push(`/dashboard?date=${formData.reservation_date}`);
-                setFormData({...initialFormState});
-            })
-            .catch((error) => {
-                console.log('here is the error being thrown', error)
-                setError(error)});
+        try {
+            if(!reservation_id) {await reservationCreation({...formData, people: parseInt(formData.people), status: 'booked'})}
+        else {
+            await reservationUpdate({...formData, people: parseInt(formData.people), status: reservation.status}, reservation_id)}
+            history.push(`/dashboard?date=${formData.reservation_date}`);
+            setFormData({...initialFormState});
+        }
+        catch(error){setError(error); throw error}
     }
 
     const handleCancel = (event) => {
@@ -45,7 +66,7 @@ export default function CreateReservationForm(){
 
     return (
         <>
-            <h1>Make a Reservation</h1>
+            <h1>{reservation_id ? 'Edit':'Make'} a Reservation</h1>
             <ErrorAlert error={error} />
             <form onSubmit={handleSubmit}>
             <label htmlFor='first_name'>
@@ -123,4 +144,5 @@ export default function CreateReservationForm(){
         </form>
         </>
     )
+    
 }

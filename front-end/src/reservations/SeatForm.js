@@ -1,46 +1,28 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {useHistory, useParams} from 'react-router-dom';
-import {assignReservation, listTables, updateReservationStatus} from '../utils/api';
 
-export default function SeatForm(){
-    const [tables, setTables] = useState([]);
-    const [tablesError, setTablesError] = useState(null);
-    const [error, setError] = useState(null);
+export default function SeatForm({tables, getTables, reservationAssignment, reservationStatusChange}){
     const {reservation_id} = useParams();
     let history = useHistory();
+
+    useEffect(() => {getTables()},[getTables]);
 
     const handleCancel = (event) => {
         event.preventDefault();
         history.goBack();
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        const abortController = new AbortController();
-        console.log('in handleSubmit of SeatForm ');
-        console.log('and here are friends. reservation_id: ', reservation_id);
-        assignReservation(reservation_id, event.target.table_id.value, abortController.signal)
-            .then(() => history.push('/dashboard'))
-            .catch(setError);
-        updateReservationStatus(reservation_id, 'seated', abortController.signal)
-            .catch(setError);
-        return () => abortController.abort();
+        try {
+            await reservationAssignment(reservation_id, event.target.table_id.value);
+            await reservationStatusChange(reservation_id, 'seated');
+            history.push('/dashboard');
+       }
+        catch(error){throw error}
     }
 
-
-    useEffect(loadTables, []);
-
-    function loadTables(){
-        console.log('loading table options for seating...');
-        const abortController = new AbortController();
-        setTablesError(null);
-        listTables(abortController.signal)
-            .then(setTables)
-            .catch(setTablesError);
-        return () => abortController.abort();
-    }
-
-    const tableOptions = tables.map((table) => {return <option value={table.table_id}>{table.table_name} - {table.capacity}</option>})
+    const tableOptions = tables.map((table) => {return <option key={`option-${table.table_id}`} value={table.table_id}>{table.table_name} - {table.capacity}</option>})
 
     return (
         <>
@@ -50,7 +32,7 @@ export default function SeatForm(){
                     <option value='default'>--Please select a table--</option>
                     {tableOptions}
                 </select>
-                <button type='submit' value='Submit'>Submit</button>
+                <button type='submit' onSubmit={handleSubmit}>Submit</button>
                 <button type='button' onClick={handleCancel}>Cancel</button>
             </form>
         </>

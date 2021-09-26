@@ -1,6 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import ReservationList from '../reservations/ReservationList';
 import {listReservations} from '../utils/api';
+import ErrorAlert from '../layout/ErrorAlert';
 
 export default function SearchReservations(){
     const initialFormData = {mobile_number: ''};
@@ -13,7 +14,6 @@ export default function SearchReservations(){
     const handleChange = (event) => {
         event.preventDefault();
         setMobilePhone({...mobilePhone, mobile_number: event.target.value});
-        console.log(mobilePhone);
     }
 
     const handleSubmit = (event) => {
@@ -37,6 +37,7 @@ export default function SearchReservations(){
 
     return (
         <>
+            <ErrorAlert error={reservationsError} />
             <div className='searchByPhoneNumber'>
                 <h4>Search for a Reservation</h4>
                 <form onSubmit={handleSubmit}>
@@ -48,5 +49,4 @@ export default function SearchReservations(){
             {searchHTML(reservations)}
         </>
     )
-
 }

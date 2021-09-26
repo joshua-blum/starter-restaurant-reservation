@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useCallback } from "react";
 import {useHistory} from "react-router-dom";
-import { listReservations, listTables } from "../utils/api";
 import {previous, today, next} from "../utils/date-time";
 import ErrorAlert from "../layout/ErrorAlert";
 import ReservationList from "../reservations/ReservationList";
@@ -12,28 +11,17 @@ import TableList from '../tables/TableList';
  *  the date for which the user wants to view reservations.
  * @returns {JSX.Element}
  */
-function Dashboard({ date }) {
+function Dashboard({ date, reservations, reservationsError, getReservations, tables, tablesError, getTables, reservationStatusChange, reservationUnassignment }) {
   const history = useHistory();
-  const [reservations, setReservations] = useState([]);
-  const [tables, setTables] = useState([]);
-  const [reservationsError, setReservationsError] = useState(null);
-  const [tablesError, setTablesError] = useState(null);
 
-  useEffect(loadDashboard, [date, setTables]);
+  const loadDashboard = useCallback(async () => {
+      const abortController = new AbortController();
+      await getReservations(abortController.signal, date);
+      await getTables(abortController.signal);
+      return () => abortController.abort();
+  }, [getReservations, getTables, date])
 
-  function loadDashboard() {
-    console.log('loading dashboard...');
-    const abortController = new AbortController();
-    setReservationsError(null);
-    setTablesError(null);
-    listReservations({date}, abortController.signal)
-      .then(setReservations)
-      .catch(setReservationsError);
-    listTables(abortController.signal)
-      .then(setTables)
-      .catch(setTablesError);
-    return () => abortController.abort();
-  }
+  useEffect(() => {loadDashboard();}, [loadDashboard, date])
 
   return (    
     <main>
@@ -42,9 +30,9 @@ function Dashboard({ date }) {
         <h4 className="mb-0">Reservations for {date}</h4>
       </div>
       <ErrorAlert error={reservationsError} />
-      {/*{JSON.stringify(reservations)}*/}
-      <ReservationList reservations={reservations} />
-      <TableList tables={tables} />
+      <ErrorAlert error={tablesError} />
+      <ReservationList reservations={reservations} reservationStatusChange={reservationStatusChange} />
+      <TableList tables={tables} reservationUnassignment={reservationUnassignment} />
       <button type="button" onClick={() => history.push(`/dashboard?date=${previous(date)}`)}>Prior</button>
       <button type='button' onClick={() => history.push(`/dashboard?date=${today()}`)}>Today</button>
       <button type='button' onClick={() => history.push(`/dashboard?date=${next(date)}`)}>Next</button>

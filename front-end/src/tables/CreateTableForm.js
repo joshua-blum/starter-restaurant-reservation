@@ -1,12 +1,11 @@
 import React, {useState} from "react";
 import {useHistory} from "react-router-dom";
-import {createTable} from '../utils/api';
 import ErrorAlert from '../layout/ErrorAlert';
-import {today} from '../utils/date-time';
 
 
-export default function CreateTableForm(){
+export default function CreateTableForm({tableCreation}){
     const [error, setError] = useState(null);
+    const abortController = new AbortController();
     const history = useHistory();
     const initialFormState = {
         table_name: "",
@@ -19,14 +18,18 @@ export default function CreateTableForm(){
         setFormData({...formData, [target.name]: target.value});
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        createTable(formData)
-            .then(() => {
-                history.push(`/dashboard?date=${today()}`);
-                setFormData({...initialFormState})
-            })
-            .catch(setError);
+        try{ 
+            await tableCreation(formData, abortController.signal);
+            setFormData({...initialFormState});
+            history.push('/dashboard');
+            return () => abortController.abort();
+        } 
+        catch(error){
+            setError(error); 
+            throw error
+        }
     }
 
     const handleCancel = (event) => {
@@ -34,8 +37,6 @@ export default function CreateTableForm(){
         setFormData({...initialFormState});
         history.goBack();
     }
-
-
 
     return (
         <>

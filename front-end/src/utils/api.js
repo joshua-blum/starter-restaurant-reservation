@@ -31,14 +31,11 @@ headers.append("Content-Type", "application/json");
  */
 async function fetchJson(url, options, onCancel) {
   try {
-    console.log('in fetch json')
     const response = await fetch(url, options);
-    if (response.status === 204) {
+    if (response.status === 204 || (response.status === 200 && options.method === 'DELETE')) {
       return null;
     }
-
     const payload = await response.json();
-    console.log('here is the payload ', payload);
     if (payload.error) {
       return Promise.reject({ message: payload.error });
     }
@@ -63,16 +60,19 @@ export async function listReservations(params, signal) {
   Object.entries(params).forEach(([key, value]) =>
     url.searchParams.append(key, value.toString())
   );
-  console.log('here is the url being sent to fetchjson ', JSON.stringify(url));
   return await fetchJson(url, { headers, signal }, [])
     .then(formatReservationDate)
     .then(formatReservationTime);
 }
 
 export async function listTables(signal){
-  console.log('listing tables now');
   const url = new URL(`${API_BASE_URL}/tables`);
   return await fetchJson(url, { headers, signal }, [])
+}
+
+export async function findReservation(id, signal){
+  const url = new URL(`${API_BASE_URL}/reservations/${id}`);
+  return await fetchJson(url, {headers, signal}, []);
 }
 
 export async function createReservation(reservation, signal){
@@ -98,7 +98,6 @@ export async function createTable(table, signal){
 }
 
 export async function assignReservation(id, table_id, signal){
-  console.log('here are the infos: ', id, ' table ', table_id);
   const url = `${API_BASE_URL}/tables/${table_id}/seat`;
   const options = {
     method: 'PUT',
@@ -110,7 +109,6 @@ export async function assignReservation(id, table_id, signal){
 }
 
 export async function unassignReservation(table_id, signal){
-  console.log('in unassignReservation ', table_id);
   const url = `${API_BASE_URL}/tables/${table_id}/seat`;
   const options = {
     method: 'DELETE',
@@ -121,7 +119,6 @@ export async function unassignReservation(table_id, signal){
 }
 
 export async function updateReservationStatus(id, newStatus, signal){
-  console.log('in updateReservationStatus with ', id, ' and the status to be: ', newStatus);
   const url = `${API_BASE_URL}/reservations/${id}/status`;
   const options = {
     method: 'PUT',
@@ -132,8 +129,8 @@ export async function updateReservationStatus(id, newStatus, signal){
   return await fetchJson(url, options, 'update reservation status error');
 }
 
-export async function editReservation(updatedReservation, signal){
-  const url = `${API_BASE_URL}/reservations/`;
+export async function editReservation(updatedReservation, id, signal){
+  const url = `${API_BASE_URL}/reservations/${id}`;
   const options = {
     method: 'PUT',
     headers,
