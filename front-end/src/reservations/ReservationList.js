@@ -1,8 +1,22 @@
 import React from "react";
-import Reservation from './Reservation';
+import Reservation from "./Reservation";
 
-//component that displays the reservations in a list, first sorting the passed in reservations array by time
-export default function ReservationList({reservations, reservationStatusChange}){
-    let reservationHTML = reservations.map((reservation) => <Reservation key={`reservation-${reservation.reservation_id}`} reservation={reservation} reservationStatusChange={reservationStatusChange}/>);
-    return reservationHTML;
+/**
+ * Defines a list of reservation cards
+ * @param {*} reservations - reservation data to be made into reservation cards
+ * @param {*} reservationStatusChange - API call to PUT changes to reservation status
+ * @returns {JSX.element}
+ */
+export default function ReservationList({
+  reservations,
+  reservationStatusChange,
+}) {
+  let reservationHTML = reservations.map((reservation) => (
+    <Reservation
+      key={`reservation-${reservation.reservation_id}`}
+      reservation={reservation}
+      reservationStatusChange={reservationStatusChange}
+    />
+  ));
+  return reservationHTML;
 }

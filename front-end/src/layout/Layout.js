@@ -3,7 +3,7 @@ import Menu from "./Menu";
 import Routes from "./Routes";
 
 import "./Layout.css";
-import '../colors.css';
+import "../colors.css";
 
 /**
  * Defines the main layout of the application.
@@ -19,7 +19,7 @@ function Layout() {
         <div className="dark-violet fixed-top">
           <Menu />
         </div>
-        <div className='goldenrod body'>
+        <div className="goldenrod body">
           <Routes />
         </div>
       </div>

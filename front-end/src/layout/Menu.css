@@ -1,18 +1,21 @@
+/**
+* CSS styling for app header to ensure proper aesthetics for navbar 
+*/
+
 .link {
-    border-radius: 200px;
+  border-radius: 200px;
 }
 
 a {
-    color: white;
+  color: white;
 }
 
 a:hover {
-    color: #D8BFD8;
-    text-decoration: none;
+  color: #d8bfd8;
+  text-decoration: none;
 }
 
 a:active {
-    color: #393a44;
-    text-decoration: none;
+  color: #393a44;
+  text-decoration: none;
 }
-

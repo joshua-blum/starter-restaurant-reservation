@@ -1,5 +1,4 @@
-
-exports.up = function(knex) {
+exports.up = function (knex) {
   return knex.schema.table("reservations", (table) => {
     table.string("first_name");
     table.string("last_name");
@@ -7,10 +6,10 @@ exports.up = function(knex) {
     table.string("reservation_date");
     table.string("reservation_time");
     table.integer("people");
-  })
+  });
 };
 
-exports.down = function(knex) {
+exports.down = function (knex) {
   return knex.schema.table("reservations", (table) => {
     table.dropColumn("first_name");
     table.dropColumn("last_name");
@@ -18,5 +17,5 @@ exports.down = function(knex) {
     table.dropColumn("reservation_date");
     table.dropColumn("reservation_time");
     table.dropColumn("people");
-  })
+  });
 };
