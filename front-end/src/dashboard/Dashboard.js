@@ -5,6 +5,8 @@ import ErrorAlert from "../layout/ErrorAlert";
 import ReservationList from "../reservations/ReservationList";
 import TableList from '../tables/TableList';
 
+import '../colors.css';
+
 /**
  * Defines the dashboard page.
  * @param date
@@ -25,17 +27,26 @@ function Dashboard({ date, reservations, reservationsError, getReservations, tab
 
   return (    
     <main>
-      <h1>Dashboard</h1>
-      <div className="d-md-flex mb-3">
+      <div className='violet p-4 m-0'>
+      <h1 className='oi oi-dashboard'> Dashboard</h1>
+      </div>
+      <br />
+      <div className="col d-flex btn-group m-0" role="group">
+      <button type="button" className='btn violet' onClick={() => history.push(`/dashboard?date=${previous(date)}`)}>Prior</button>
+      <button type='button' className='btn violet' onClick={() => history.push(`/dashboard?date=${today()}`)}>Today</button>
+      <button type='button' className='btn violet' onClick={() => history.push(`/dashboard?date=${next(date)}`)}>Next</button>
+      </div>
+      <br />
+      <div className="d-md-flex mb-2 p-2">
         <h4 className="mb-0">Reservations for {date}</h4>
       </div>
+      <section className='col dashboard-body'>
       <ErrorAlert error={reservationsError} />
       <ErrorAlert error={tablesError} />
       <ReservationList reservations={reservations} reservationStatusChange={reservationStatusChange} />
+      <hr className='dark-violet' /> 
       <TableList tables={tables} reservationUnassignment={reservationUnassignment} />
-      <button type="button" onClick={() => history.push(`/dashboard?date=${previous(date)}`)}>Prior</button>
-      <button type='button' onClick={() => history.push(`/dashboard?date=${today()}`)}>Today</button>
-      <button type='button' onClick={() => history.push(`/dashboard?date=${next(date)}`)}>Next</button>
+      </section>
     </main>
   );
 }

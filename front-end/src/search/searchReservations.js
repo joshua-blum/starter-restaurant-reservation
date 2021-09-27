@@ -3,6 +3,8 @@ import ReservationList from '../reservations/ReservationList';
 import {listReservations} from '../utils/api';
 import ErrorAlert from '../layout/ErrorAlert';
 
+import '../colors.css'
+
 export default function SearchReservations(){
     const initialFormData = {mobile_number: ''};
     const initialReservationSearchMessage = 'Use the mobile phone of the reservation';
@@ -31,22 +33,37 @@ export default function SearchReservations(){
 
     const searchHTML = (reservations) => {
         if(typeof reservations[0] === 'object') return <ReservationList reservations={reservations} />
-        else if (typeof reservations[0] === 'string') return <h5>{reservations[0]}</h5>
-        else return <h4>No reservations found</h4>
+        else if (typeof reservations[0] === 'string') return <h5 className='goldenrod p-5'>{reservations[0]}</h5>
+        else return <h4 className='goldenrod p-5'>No reservations found</h4>
     }
 
     return (
         <>
-            <ErrorAlert error={reservationsError} />
-            <div className='searchByPhoneNumber'>
-                <h4>Search for a Reservation</h4>
-                <form onSubmit={handleSubmit}>
-                    <p>Phone number: </p>
-                    <input name='mobile_number' value={mobilePhone.mobile_number} onChange={handleChange}/>
-                    <button value='Submit' type='submit'>Find</button>
-                </form>
+            <div className='violet p-4 m-0'>
+            <h1 className='oi oi-magnifying-glass'> Search for a Reservation</h1>
             </div>
+            <ErrorAlert error={reservationsError} />
+                <form className='m-4' onSubmit={handleSubmit}>
+                    <div className='form-group m-0'>
+                    <label htmlFor='mobile_number'>
+                            Phone number:
+                        </label>
+                            <input 
+                                id='mobile_number' 
+                                type='text' 
+                                className='form-control m-2 p-4' 
+                                name='mobile_number' 
+                                value={mobilePhone.mobile_number} 
+                                placeholder='Type the mobile phone of the reservation you are looking for' 
+                                onChange={handleChange}/>
+                       <br />
+                        <button className='btn dark-violet' value='Submit' type='submit'>Find</button>
+
+                    </div>       
+                </form>
+            <div className='m-4'>
             {searchHTML(reservations)}
+            </div>
         </>
     )
 }

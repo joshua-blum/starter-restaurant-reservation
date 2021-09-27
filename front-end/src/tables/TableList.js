@@ -5,9 +5,11 @@ import Table from './Table';
 export default function TableList({tables, reservationUnassignment}){
     let tablesHTML = tables.map((table) => <Table key={table.table_id} table={table} reservationUnassignment={reservationUnassignment}/>);
     return (
-        <>
-        <h4>Tables</h4>
+    <>
+        <h4 className='m-10'>Tables</h4>
+        <div className='row row-cols-1 row-cols-md-2 row-cols-lg-3'>
         {tablesHTML}
-        </>
+        </div>
+    </>
         );
 }

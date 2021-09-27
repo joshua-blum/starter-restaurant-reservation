@@ -6,12 +6,12 @@ a {
     color: white;
 }
 
-a.link:hover {
+a:hover {
     color: #D8BFD8;
     text-decoration: none;
 }
 
-a.link:active {
+a:active {
     color: #393a44;
     text-decoration: none;
 }

@@ -1,4 +1,4 @@
-.side-bar {
-  background-color: #393a44;
-  min-width: 200px;
+.body {
+  margin-top: 50px;
+  min-height: calc(100vh - 40px);
 }

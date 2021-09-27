@@ -1,6 +1,8 @@
 import React from "react";
 import {useHistory} from 'react-router-dom';
 
+import '../colors.css';
+
 export default function Reservation({ reservation, reservationStatusChange}){
     const abortController = new AbortController();
     const history = useHistory();
@@ -24,19 +26,23 @@ export default function Reservation({ reservation, reservationStatusChange}){
     }
 
     return (
-    <div className={`reservation`}>
-        <hr />
-        <h4>Reservation for {reservation.first_name} {reservation.last_name}</h4>
-        <ul>
+        <div className='col p-10 m-10'>
+    <div className="reservation card h-100 border-secondary align-items-center light-silver">
+        <div className='card-body'>
+        <h4 className='card-title'>Reservation for {reservation.first_name} {reservation.last_name}</h4>
+        <ul className='card-text list-unstyled'>
             <li key={`reservation-date`}>Date: {reservation.reservation_date}</li>
             <li key={`reservation-time`}>Time: {reservation.reservation_time}</li>
             <li key={`reservation-people`}>Party Size: {reservation.people}</li>
             <li key={`reservation-status`}data-reservation-id-status={reservation.reservation_id}>Status: {isBooked(reservation) ? 'booked':reservation.status}</li>
         </ul>
-        {isBooked(reservation) ? <a href={`/reservations/${reservation.reservation_id}/seat`}><button onClick={() => seatReservation(reservation.reservation_id)}>Seat</button></a>:null}
-        <a href={`/reservations/${reservation.reservation_id}/edit`}>Edit</a>
-        <button type='button' data-reservation-id-cancel={reservation.reservation_id} onClick={() => cancelReservation(reservation.reservation_id)}>Cancel</button>
-        <hr/>
+        <div className='d-flex justify-content-between'>
+        {isBooked(reservation) ? <a href={`/reservations/${reservation.reservation_id}/seat`}><button type='button' className='btn dark-violet' onClick={() => seatReservation(reservation.reservation_id)}>Seat</button></a>:null}
+        <a href={`/reservations/${reservation.reservation_id}/edit`}><button type='button' className='btn dark-silver'>Edit</button></a>
+        <button type='button' className='btn btn-danger' data-reservation-id-cancel={reservation.reservation_id} onClick={() => cancelReservation(reservation.reservation_id)}>Cancel</button>
+        </div>
+        </div>
+    </div>
     </div>
     )
 }

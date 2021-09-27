@@ -3,6 +3,7 @@ import Menu from "./Menu";
 import Routes from "./Routes";
 
 import "./Layout.css";
+import '../colors.css';
 
 /**
  * Defines the main layout of the application.
@@ -15,10 +16,10 @@ function Layout() {
   return (
     <div>
       <div>
-        <div className="side-bar">
+        <div className="dark-violet fixed-top">
           <Menu />
         </div>
-        <div className='p-2'>
+        <div className='goldenrod body'>
           <Routes />
         </div>
       </div>

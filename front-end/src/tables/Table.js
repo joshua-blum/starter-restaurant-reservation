@@ -1,6 +1,8 @@
 import React from 'react';
 import {useHistory} from 'react-router-dom';
 
+import '../colors.css';
+
 
 export default function Table({ table, reservationUnassignment }){
     let history = useHistory();
@@ -19,13 +21,16 @@ export default function Table({ table, reservationUnassignment }){
 
 
     return (
-    <div className={`table`}>
-        <h4>{table.table_name}</h4>
-        <ul>
+  <div className='col'>
+    <div className="table card h-100 border-secondary align-items-left light-silver">
+        <div className='card-body'>
+        <h4 className='card-title'>{table.table_name}</h4>
+        <ul className='card-text list-unstyled'>
             <li key={`table-capacity`}>Capacity: {table.capacity}</li>
             <li key={`table-status`} data-table-id-status={table.table_id}>Status: {!isOccupied(table) ? "Free": "Occupied"}</li>
         </ul>
-        {isOccupied(table) ? <button type='button' data-table-id-finish={table.table_id} onClick={() => finishTable(table.table_id)}>Finish</button>:null}
-        <hr />
+        {isOccupied(table) ? <button type='button' className='btn dark-violet align-item-center' data-table-id-finish={table.table_id} onClick={() => finishTable(table.table_id)}>Finish</button>:null}
+        </div>
     </div>
+</div>
 )}

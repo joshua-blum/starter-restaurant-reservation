@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {useHistory} from "react-router-dom";
 import ErrorAlert from '../layout/ErrorAlert';
 
+import '../colors.css';
 
 export default function CreateTableForm({tableCreation}){
     const [error, setError] = useState(null);
@@ -40,36 +41,46 @@ export default function CreateTableForm({tableCreation}){
 
     return (
         <>
-            <div>
+            <div className='violet p-4 m-0'>
+            <h1 className='oi oi-layers'> Make a Table</h1>
+            </div>
                 <ErrorAlert error={error} />
-                <h1>Set up a Table</h1>
-                <form onSubmit={handleSubmit}>
+                <form className='m-4' onSubmit={handleSubmit}>
+                    <div className='form-group m-0'>
                     <label htmlFor='table_name'>
                     Table Name: 
+                    </label>
                     <input
                         id='table_name'
                         type='text'
+                        className='form-control'
                         name='table_name'
                         onChange={handleChange}
                         value={formData.table_name}
                     />
-                    </label>
-                    <br />
-                    <label htmlFor='capacity'>
+                    </div>
+          
+          <div className='form-group m-0'>
+          <label htmlFor='capacity'>
                         Capacity: 
+                        </label>
                         <input
                             id='capacity'
                             type='number'
+                            className='form-control'
                             name='capacity'
                             onChange={handleChange}
                             value={formData.capacity}
                         />
-                    </label>
-                    <br />
-                    <button type='submit' onSubmit={handleSubmit}>Submit</button>
-                    <button type='button' onClick={handleCancel}>Cancel</button>
+          </div>
+                 <br />
+                 <div className='d-flex justify-content-between'>
+
+                    <button type='submit' className='btn dark-violet' onSubmit={handleSubmit}>Submit</button>
+                    <button type='button' className='btn light-silver' onClick={handleCancel}>Cancel</button>
+                    </div>
                 </form>
-            </div>
+                <br />
         </>
     );
 }
