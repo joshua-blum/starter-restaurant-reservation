@@ -3,7 +3,6 @@ const knex = require("../db/connection");
 const list = (date) => {
   //if a date is specified, return only the reservations specified by that date
   if (date) {
-    // return knex('reservations').select('*').where({reservation_date: date}).whereNot('status', 'finished').orderBy('reservation_time');
     return knex("reservations")
       .where((builder) =>
         builder
@@ -23,6 +22,7 @@ const list = (date) => {
 };
 
 const search = (mobile_number) => {
+  //knex query to return all reservations with a mobile_number matching the passed in mobile_number 
   return knex("reservations")
     .whereRaw(
       "translate(mobile_number, '() -', '') like ?",

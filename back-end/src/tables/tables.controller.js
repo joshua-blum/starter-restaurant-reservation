@@ -17,7 +17,7 @@ const validateBody = (req, res, next) => {
       return next({ status: 400, message: `Field required: ${requirement}` });
   });
 
-  //check if the table name and capacity are valid
+  //check if the table_name and capacity are valid
   if (req.body.data.table_name.split("").length <= 1)
     return next({
       status: 400,

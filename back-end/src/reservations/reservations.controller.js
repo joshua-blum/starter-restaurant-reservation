@@ -72,7 +72,7 @@ const validateBody = (req, res, next) => {
     });
   }
 
-  //test if date and time combo is future
+  //test if date and time combination is future
   if (
     reservationDate === today &&
     reservation_time <= `${today.getHours()}:${today.getMinutes()}`
@@ -83,11 +83,11 @@ const validateBody = (req, res, next) => {
     });
   }
 
-  //test if people is a number
+  //test if people variable is a number
   if (typeof req.body.data.people != "number")
     return next({ status: 400, message: "people must be a number" });
 
-  //test if people is a number greater than 0
+  //test if people variable is a number greater than 0
   if (parseInt(req.body.data.people) < 1)
     return next({
       status: 400,
@@ -117,6 +117,7 @@ const validReservation = async (req, res, next) => {
 };
 
 const canUpdate = async (req, res, next) => {
+  //tests to make sure a request body is being sent
   if (!req.body.data)
     return next({ status: 400, message: "Body must include a data object" });
   if (!req.body.data.status)
@@ -125,6 +126,8 @@ const canUpdate = async (req, res, next) => {
       message:
         "There must be a status to which the reservation is being updated",
     });
+
+  //tests to make sure the status to be is appropriate
   const possibleStatuses = ["booked", "seated", "finished", "cancelled"];
   let statusIsPossible = false;
   for (let i = 0; i < 4; i++) {
@@ -135,6 +138,8 @@ const canUpdate = async (req, res, next) => {
       status: 400,
       message: "The status you are attempting to update is unknown",
     });
+
+  //checks if a reservation param is used, if it is valid
   const { reservation_id } = req.params;
   const originalReservation = await service.read(reservation_id);
   if (!originalReservation[0])
