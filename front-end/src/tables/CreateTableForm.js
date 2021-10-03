@@ -57,6 +57,7 @@ export default function CreateTableForm({ tableCreation }) {
             type="text"
             className="form-control"
             name="table_name"
+            placeholder="Table Name"
             onChange={handleChange}
             value={formData.table_name}
           />

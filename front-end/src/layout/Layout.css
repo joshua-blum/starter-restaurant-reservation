@@ -6,4 +6,5 @@
 .body {
   margin-top: 50px;
   min-height: calc(100vh - 40px);
+  min-width: calc(100vw - 20px);
 }

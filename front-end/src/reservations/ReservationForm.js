@@ -122,6 +122,7 @@ export default function ReservationForm({
             type="text"
             className="form-control"
             name="last_name"
+            placeholder="Last Name"
             onChange={handleChange}
             value={formData.last_name}
           />
@@ -133,6 +134,7 @@ export default function ReservationForm({
             type="text"
             className="form-control"
             name="mobile_number"
+            placeholder="x-xxx-xxx-xxxx"
             onChange={handleChange}
             value={formData.mobile_number}
           />

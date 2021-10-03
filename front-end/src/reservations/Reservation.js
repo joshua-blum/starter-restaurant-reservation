@@ -1,5 +1,4 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
 
 import "../colors.css";
 
@@ -11,7 +10,6 @@ import "../colors.css";
  */
 export default function Reservation({ reservation, reservationStatusChange }) {
   const abortController = new AbortController();
-  const history = useHistory();
 
   const isBooked = ({ status }) => {
     if (status === "booked" || status === null) return true;
@@ -31,7 +29,7 @@ export default function Reservation({ reservation, reservationStatusChange }) {
         )
       ) {
         await reservationStatusChange(id, "cancelled");
-        history.push("/dashboard");
+        window.location.reload();
       }
     } catch (error) {
       throw error;
@@ -60,6 +58,7 @@ export default function Reservation({ reservation, reservationStatusChange }) {
               Status: {isBooked(reservation) ? "booked" : reservation.status}
             </li>
           </ul>
+          {(reservation.status === 'finished' || reservation.status === 'cancelled') ? null:
           <div className="d-flex justify-content-between">
             {isBooked(reservation) ? (
               <a href={`/reservations/${reservation.reservation_id}/seat`}>
@@ -86,6 +85,7 @@ export default function Reservation({ reservation, reservationStatusChange }) {
               Cancel
             </button>
           </div>
+          }
         </div>
       </div>
     </div>

@@ -202,7 +202,7 @@ function Routes() {
         <CreateTableForm tableCreation={tableCreation} />
       </Route>
       <Route exact={true} path="/search">
-        <SearchReservations />
+        <SearchReservations reservationStatusChange={reservationStatusChange} />
       </Route>
       <Route>
         <NotFound />

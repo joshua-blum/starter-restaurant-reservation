@@ -16,7 +16,7 @@ function Menu() {
       <nav className="navbar navbar-expand-lg navbar-dark align-items-start">
         <div className="container-fluid d-flex flex-row justify-content-between">
           <Link to="/">
-            <span className="navbar-brand d-flex">Periodic Tables</span>
+            <span className="navbar-brand oi oi-beaker">  Periodic Tables</span>
           </Link>
           <button
             className="navbar-toggler"

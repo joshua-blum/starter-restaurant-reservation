@@ -27,9 +27,9 @@ const validateBody = (req, res, next) => {
       return next({ status: 400, message: `Field required: ${requirement}` });
   });
 
-  let reservationDate = new Date(req.body.data.reservation_date);
+  let reservationDate = new Date(`${req.body.data.reservation_date}T${req.body.data.reservation_time}:00`);
   //test if reservation_date is on a Tuesday
-  if (reservationDate.getDay() === 1)
+  if (reservationDate.getDay() === 2)
     return next({
       status: 400,
       message: "The restaurant is closed on Tuesdays",

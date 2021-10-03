@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
+import '../colors.css';
 
 /**
  * Defines a form to assign reservations to a table
@@ -22,9 +23,12 @@ export default function SeatForm({
     getTables();
   }, [getTables]);
 
-  const handleCancel = (event) => {
+  const handleCancel = async (event) => {
     event.preventDefault();
-    history.goBack();
+    try {
+      await reservationStatusChange(reservation_id, "booked");
+      history.goBack();
+    } catch(error){throw error};
   };
 
   const handleSubmit = async (event) => {
@@ -48,18 +52,25 @@ export default function SeatForm({
 
   return (
     <>
-      <h4>Find a Seat</h4>
-      <form onSubmit={handleSubmit}>
+      <div className="violet p-4 m-0">
+      <h1 className="oi oi-location"> Find a Seat</h1>
+      </div>
+      <form className="m-4" onSubmit={handleSubmit}>
+        <div className="m-0">
         <select name="table_id">
-          <option value="default">--Please select a table--</option>
+          <option value="default">-- Please select a table --</option>
           {tableOptions}
         </select>
-        <button type="submit" onSubmit={handleSubmit}>
+        </div>
+        <br />
+        <div className="d-flex justify-content-between">
+        <button className="btn dark-violet" type="submit" onSubmit={handleSubmit}>
           Submit
         </button>
-        <button type="button" onClick={handleCancel}>
+        <button className="btn light-silver" type="button" onClick={handleCancel}>
           Cancel
         </button>
+        </div>
       </form>
     </>
   );

@@ -9,7 +9,7 @@ import "../colors.css";
  * Defines a search page for reservations to search by mobile_number parameter
  * @returns {JSX.element}
  */
-export default function SearchReservations() {
+export default function SearchReservations({reservationStatusChange}) {
   const initialFormData = { mobile_number: "" };
   const initialReservationSearchMessage =
     "Use the mobile phone of the reservation";
@@ -41,7 +41,7 @@ export default function SearchReservations() {
   //defines the reservations displayed on the search page depending on user queries
   const searchHTML = (reservations) => {
     if (typeof reservations[0] === "object")
-      return <ReservationList reservations={reservations} />;
+      return <ReservationList reservations={reservations} reservationStatusChange={reservationStatusChange} />;
     else if (typeof reservations[0] === "string")
       return <h5 className="goldenrod p-5">{reservations[0]}</h5>;
     else return <h4 className="goldenrod p-5">No reservations found</h4>;
