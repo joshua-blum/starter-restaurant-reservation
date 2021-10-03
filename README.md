@@ -89,17 +89,17 @@ The application utilizes two different structures for storing information for _r
 
 The application involves performing CRUDL operations to manipulate the tables and reservations objects stored in the PostgreSQL database. Here is an overview of the different API calls which can be made:
 
-|      Function Name       |              Arguments               | HTTP Verb |          Returns           |                        Description                              | 
-|--------------------------|--------------------------------------|-----------|----------------------------|-----------------------------------------------------------------|
-|  listReservations        |  params, signal                      |  GET      |  {Promise<[reservations]>} |  Retrieves reservations based on passed params                  |
-|  listTables              |  signal                              |  GET      |  {Promise<[reservaitons]>} |  Retrieves tables based on url params                           |
-|  findReservation         |  reservation_id, signal              |  READ     |  {Promise<[reservation]>}  |  Retrieves a reservation with reservation_id matching argument  |
-|  editReservation         |  reservation, reservation_id, signal |  PUT      |  {Promise<[reservation]>}  |  Updates a reservation based on user input                      |
-|  createReservation       |  reservation, signal                 |  POST     |  {Promise<[table]>}        |  Creates a new reservation object in the database               |
-|  createTable             |  table, signal                       |  POST     |  {Promise<[table]>}        |  Creates a new table object in the database                     |
-|  updateReservationStatus |  reservation_id, status, signal      |  PUT      |  {Promise<[reservation]>}  |  Updates a reservation with a passed in status                  |
-|  assignReservation       |  reservation_id, table_id, signal    |  PUT      |  {Promise<[table]>}        |  Assigns a reservation_id to be updated into the relevant table |
-|  unassignReservation     |  table_id, signal                    |  DELETE   |  {Promise}                 |  Removes a reservation_id from a table                          |
+|          Function            |              Arguments               | HTTP Verb |           Returns            |                        Description                              | 
+|------------------------------|--------------------------------------|-----------|------------------------------|-----------------------------------------------------------------|
+|  `listReservations()`        |  params, signal                      |  GET      |  `{Promise<[reservations]>}` |  Retrieves reservations based on passed params                  |
+|  `listTables()`              |  signal                              |  GET      |  `{Promise<[reservaitons]>}` |  Retrieves tables based on url params                           |
+|  `findReservation()`         |  reservation_id, signal              |  READ     |  `{Promise<[reservation]>}`  |  Retrieves a reservation with reservation_id matching argument  |
+|  `editReservation()`         |  reservation, reservation_id, signal |  PUT      |  `{Promise<[reservation]>}`  |  Updates a reservation based on user input                      |
+|  `createReservation()`       |  reservation, signal                 |  POST     |  `{Promise<[table]>}`        |  Creates a new reservation object in the database               |
+|  `createTable()`             |  table, signal                       |  POST     |  `{Promise<[table]>}`        |  Creates a new table object in the database                     |
+|  `updateReservationStatus()` |  reservation_id, status, signal      |  PUT      |  `{Promise<[reservation]>}`  |  Updates a reservation with a passed in status                  |
+|  `assignReservation()`       |  reservation_id, table_id, signal    |  PUT      |  `{Promise<[table]>}`        |  Assigns a reservation_id to be updated into the relevant table |
+|  `unassignReservation()`     |  table_id, signal                    |  DELETE   |  `{Promise}`                 |  Removes a reservation_id from a table                          |
 
 In order to help illustrate the practical use of each API call, the following will walk through all of the API calls that a user can initiate.
 
@@ -109,7 +109,7 @@ When a user first arrives on the dashboard of the application, `listReservations
 
 If a user wants to search for a reservation by mobile phone number, they can click on the **Search** button in the navbar, and the user will be navigated to **/reservations/search**. Upon arrival, a user may search for a reservation by phone number, and upon request submission, `listReservations()` will be called with the user-input number passed through params.
 
-**screenshot** ![Search](./app-screenshots/searchReservation.png)
+![Search](./app-screenshots/searchReservation.png)
 
 If a user wishes to create a new table or reservation, they may click on **New Table** or **New Reservation** to do so, and the user will be navigated to **/tables/new** or **/reservations/new**, respectively, where they may fill out forms which, upon submission, call `createTable()` and `createReservation()` respectively.
 
