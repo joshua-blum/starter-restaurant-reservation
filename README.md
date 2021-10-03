@@ -15,7 +15,7 @@ This repository is set up as a *monorepo*, meaning that the frontend and backend
 
 ## Tehnologies
 
-This program was written using [Node.js](https://nodejs.org/), with a back-end designed using [Express.js](https://expressjs.com/), and a front-end designed using [React.js](https://reactjs.org/). Additionally, PostgreSQL databases created with [ElephantSQL](https://www.elephantsql.com/) are used in this project in order to store data, with [Knex.js](https://knexjs.org/) the framework used to script the SQL queries. Starter code was provided by [Thinkful](https://github.com/Thinkful-Ed/starter-restaurant-reservation) as a part of their Engineering Flex program capstone.
+This program was written using [Node.js](https://nodejs.org/), with a back-end designed using [Express.js](https://expressjs.com/), and a front-end designed using [React.js](https://reactjs.org/). Front-end styling was achieved using [Bootstrap](https://getbootstrap.com/). Additionally, PostgreSQL databases created with [ElephantSQL](https://www.elephantsql.com/) are used in this project in order to store data, with [Knex.js](https://knexjs.org/) the framework used to script the SQL queries. Starter code was provided by [Thinkful](https://github.com/Thinkful-Ed/starter-restaurant-reservation) as a part of their Engineering Flex program capstone.
 
 ## Installation
 
