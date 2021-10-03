@@ -105,33 +105,33 @@ In order to help illustrate the practical use of each API call, the following wi
 
 When a user first arrives on the dashboard of the application, `listReservations()` and `listTables()` will be called in order to display all available tables and all reservations corresponding to the date specified in the url params. 
 
-![Dashboard]("./app-screenshots/dashboard.png")
+![Dashboard](./app-screenshots/dashboard.png)
 
 If a user wants to search for a reservation by mobile phone number, they can click on the **Search** button in the navbar, and the user will be navigated to **/reservations/search**. Upon arrival, a user may search for a reservation by phone number, and upon request submission, `listReservations()` will be called with the user-input number passed through params.
 
-**screenshot** ![Search]("./app-screenshots/searchReservation.png")
+**screenshot** ![Search](./app-screenshots/searchReservation.png)
 
 If a user wishes to create a new table or reservation, they may click on **New Table** or **New Reservation** to do so, and the user will be navigated to **/tables/new** or **/reservations/new**, respectively, where they may fill out forms which, upon submission, call `createTable()` and `createReservation()` respectively.
 
-![Make Table]("./app-screenshots/makeTable.png")
-![Make Reservation]("./app-screenshots/makeReservation.png")
+![Make Table](./app-screenshots/makeTable.png)
+![Make Reservation](./app-screenshots/makeReservation.png)
 
 For a given reservation, a user may perform different actions. A user may cancel a reservation by pressing the **Cancel** button, which will call `udpdateReservationStatus()` with the status of 'finished', which will then prevent the reservation from being displayed when `listReservations()` is called. 
 
-![Reservation]("./app-screenshots/reservation.png")
+![Reservation](./app-screenshots/reservation.png)
 
 A reservation may also be edited by pressing the **Edit** button, which will then navigate the user to **/reservations/:reservation_id/edit**, which allows the user to modify the details of the reservation. Upon submission of any modifcation, the `editReservation()` call will be made. 
 
-![editReservation]("./app-screenshots/editReservation.png")
+![editReservation](./app-screenshots/editReservation.png)
 
 If a reservation has not already been assigned to a table, it may be 'seated' through using the **Seat** button, which will navigate the user to **/reservations/:reservation_id/seat**, which allows the user to choose from a selection of available tables to which to assign the reservation. 
 
-![Reservation]("./app-screenshots/reservation.png")
+![Reservation](./app-screenshots/reservation.png)
 
 Upon selection, `updateReservationStatus()` is called to set the status of the reservation to 'seated', and the `assignReservation()` call is made, which assigns the reservation_id to the appropriate table.
 
-![Seatform]("./app-screenshots/seatform.png")
+![Seatform](./app-screenshots/seatform.png)
 
 Finally, in the event that a table has a reservation seated with it, that table may be freed up to allow for a new reservation to be present there by pressing the **Finish** button, which calls `unassignReservation()`, which clears the reservation_id of the table in question to 'free' the table up for another reservation to be seated there. Changing the reservation's status upon unassignment is also achieved with this API call on the backend.
 
-![Finish Table]("./app-screenshots/finishtable.png")
+![Finish Table](./app-screenshots/finishtable.png)
