@@ -4,6 +4,8 @@
 
 This application provides the user with a robust management system of a fictional restaurant called "Periodic Tables". The application is designed to be used by managerial staff in order to create, manage, and cancel reservations that are phoned in by customers, and it is complete with features which allow the user to create and modify reservations, seat reservations at tables, and clear tables at the end of a customer's visit. To see a deployed version of the application, click [here](http://jb-capstone-client.herokuapp.com/dashboard). 
 
+![Overview of Functionality](./app-screenshots/periodic-tables-explanation.gif)
+
 ## Files
 
 This repository is set up as a *monorepo*, meaning that the frontend and backend projects are in one repository. \
