@@ -4,6 +4,7 @@ import { previous, today, next } from "../utils/date-time";
 import ErrorAlert from "../layout/ErrorAlert";
 import ReservationList from "../reservations/ReservationList";
 import TableList from "../tables/TableList";
+import {format} from 'date-fns';
 
 import "../colors.css";
 
@@ -69,7 +70,7 @@ function Dashboard({
       </div>
       <br />
       <div className="d-md-flex mb-2 p-2">
-        <h4 className="mb-0">Reservations for {date}</h4>
+        <h4 className="mb-0">Reservations for {format(new Date(date), 'MMMM dd, yyyy')}</h4>
       </div>
       <section className="col dashboard-body">
         <ErrorAlert error={reservationsError} />

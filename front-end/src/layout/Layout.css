@@ -8,3 +8,9 @@
   min-height: calc(100vh - 40px);
   min-width: calc(100vw - 20px);
 }
+
+.tableList {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}

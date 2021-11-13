@@ -153,7 +153,6 @@ function Routes() {
   const reservationUnassignment = async (table_id, signal) => {
     if (window.confirm("Is this table ready to seat new guests?")) {
       await unassignReservation(table_id, signal);
-      await getReservations(signal);
     }
   };
 

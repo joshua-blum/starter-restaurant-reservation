@@ -15,7 +15,7 @@ export default function Table({ table, reservationUnassignment }) {
   const finishTable = async (id) => {
     try {
       await reservationUnassignment(id);
-      history.push("/dashboard");
+      history.go(0);
     } catch (error) {
       throw error;
     }

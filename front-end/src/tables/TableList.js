@@ -18,7 +18,7 @@ export default function TableList({ tables, reservationUnassignment }) {
   return (
     <>
       <h4 className="m-10">Tables</h4>
-      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+      <div className="tableList row row-cols-1 row-cols-md-2 row-cols-lg-3">
         {tablesHTML}
       </div>
     </>
